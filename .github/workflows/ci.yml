@@ -1,0 +1,58 @@
+name: Kebab CI
+
+on:
+    push:
+        branches: ["main"]
+    pull_request:
+        branches: ["main"]
+
+concurrency:
+    group: ${{ github.workflow }}-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    test_and_lint:
+        name: Build, Lint and Test
+        runs-on: ubuntu-latest
+
+        services:
+            db:
+                image: postgres:15
+                ports:
+                    - 5432:5432
+                env:
+                    POSTGRES_USER: postgres
+                    POSTGRES_PASSWORD: postgres
+                    POSTGRES_DB: postgres
+                options: >-
+                    --health-cmd pg_isready
+                    --health-interval 10s
+                    --health-timeout 5s
+                    --health-retries 5
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  persist-credentials: false
+
+            - name: Set up Zig
+              uses: mlugg/setup-zig@v2
+              with:
+                  version: 0.16.0
+
+            - name: Install zsort
+              run: |
+                  git clone https://github.com/mstdokumaci/zsort.git /tmp/zsort
+                  cd /tmp/zsort
+                  zig build -Doptimize=ReleaseFast
+                  sudo cp zig-out/bin/zsort /usr/local/bin/zsort
+
+            - name: Check Code Format
+              run: zig fmt --check src
+
+            - name: Check Imports
+              run: zsort check src
+
+            - name: Run Tests
+              run: xvfb-run --auto-servernum zig build test --summary all
