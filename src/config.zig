@@ -1,6 +1,7 @@
-const std = @import("std");
-const testing = std.testing;
 const builtin = @import("builtin");
+const std = @import("std");
+
+const testing = std.testing;
 
 const log = std.log.scoped(.config);
 

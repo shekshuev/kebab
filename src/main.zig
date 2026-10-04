@@ -1,9 +1,11 @@
 const std = @import("std");
-const Io = std.Io;
 
 const kebab = @import("kebab");
 
 const config_mod = @import("config.zig");
+const settings_mod = @import("settings.zig");
+
+const Io = std.Io;
 const Config = config_mod.Config;
 
 pub fn main(init: std.process.Init) !void {
@@ -14,4 +16,5 @@ pub fn main(init: std.process.Init) !void {
 
 test {
     _ = config_mod;
+    _ = settings_mod;
 }
