@@ -15,10 +15,29 @@ pub fn build(b: *std.Build) void {
         },
     });
 
+    const tui_mod = b.createModule(.{
+        .root_source_file = b.path("src/tui/app.zig"),
+        .target = target,
+        .optimize = optimize,
+        .imports = &.{
+            .{ .name = "core", .module = core_mod },
+        },
+    });
+
     const dvui_module = b.dependency("dvui", .{
         .target = target,
         .optimize = optimize,
         .backend = .sdl3,
+    });
+
+    const gui_mod = b.createModule(.{
+        .root_source_file = b.path("src/gui/app.zig"),
+        .target = target,
+        .optimize = optimize,
+        .imports = &.{
+            .{ .name = "core", .module = core_mod },
+            .{ .name = "dvui", .module = dvui_module.module("dvui_sdl3") },
+        },
     });
 
     const exe = b.addExecutable(.{
@@ -29,7 +48,8 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .imports = &.{
                 .{ .name = "core", .module = core_mod },
-                .{ .name = "dvui", .module = dvui_module.module("dvui_sdl3") },
+                .{ .name = "tui", .module = tui_mod },
+                .{ .name = "gui", .module = gui_mod },
             },
         }),
     });
@@ -56,8 +76,12 @@ pub fn build(b: *std.Build) void {
                     .module = core_mod,
                 },
                 .{
-                    .name = "dvui",
-                    .module = dvui_module.module("dvui_sdl3"),
+                    .name = "tui",
+                    .module = tui_mod,
+                },
+                .{
+                    .name = "gui",
+                    .module = gui_mod,
                 },
             },
         }),
@@ -75,8 +99,35 @@ pub fn build(b: *std.Build) void {
         }),
     });
 
+    const tui_tests = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/tui/app.zig"),
+            .target = target,
+            .optimize = optimize,
+            .imports = &.{
+                .{ .name = "core", .module = core_mod },
+            },
+        }),
+    });
+
+    const gui_tests = b.addTest(.{
+        .root_module = b.createModule(.{
+            .root_source_file = b.path("src/gui/app.zig"),
+            .target = target,
+            .optimize = optimize,
+            .imports = &.{
+                .{ .name = "core", .module = core_mod },
+                .{ .name = "dvui", .module = dvui_module.module("dvui_sdl3") },
+            },
+        }),
+    });
+
     const run_app_tests = b.addRunArtifact(app_tests);
     const run_core_tests = b.addRunArtifact(core_tests);
+    const run_tui_tests = b.addRunArtifact(tui_tests);
+    const run_gui_tests = b.addRunArtifact(gui_tests);
     test_step.dependOn(&run_app_tests.step);
     test_step.dependOn(&run_core_tests.step);
+    test_step.dependOn(&run_tui_tests.step);
+    test_step.dependOn(&run_gui_tests.step);
 }
