@@ -1,6 +1,8 @@
 const std = @import("std");
 
-pub fn build(b: *std.Build) void {
+const webui_build = @import("zig_webui");
+
+pub fn build(b: *std.Build) !void {
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -24,10 +26,11 @@ pub fn build(b: *std.Build) void {
         },
     });
 
-    const dvui_module = b.dependency("dvui", .{
+    const zig_webui = b.dependency("zig_webui", .{
         .target = target,
         .optimize = optimize,
-        .backend = .sdl3,
+        .enable_tls = false,
+        .is_static = true,
     });
 
     const gui_mod = b.createModule(.{
@@ -36,12 +39,12 @@ pub fn build(b: *std.Build) void {
         .optimize = optimize,
         .imports = &.{
             .{ .name = "core", .module = core_mod },
-            .{ .name = "dvui", .module = dvui_module.module("dvui_sdl3") },
+            .{ .name = "webui", .module = zig_webui.module("webui") },
         },
     });
 
     const exe = b.addExecutable(.{
-        .name = "zpg",
+        .name = "kebab",
         .root_module = b.createModule(.{
             .root_source_file = b.path("src/main.zig"),
             .target = target,
@@ -117,7 +120,6 @@ pub fn build(b: *std.Build) void {
             .optimize = optimize,
             .imports = &.{
                 .{ .name = "core", .module = core_mod },
-                .{ .name = "dvui", .module = dvui_module.module("dvui_sdl3") },
             },
         }),
     });
@@ -130,4 +132,10 @@ pub fn build(b: *std.Build) void {
     test_step.dependOn(&run_core_tests.step);
     test_step.dependOn(&run_tui_tests.step);
     test_step.dependOn(&run_gui_tests.step);
+
+    try webui_build.addEmbeddedDir(b, gui_mod, .{
+        .path = "assets",
+        .import_name = "embedded_assets",
+        .http_responses = false,
+    });
 }

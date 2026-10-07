@@ -36,9 +36,9 @@
             .url = "git+https://github.com/karlseguin/pg.zig?ref=master#3eff324785b33ba5e9c223f4801d653dce103e95",
             .hash = "pg-0.0.0-Wp_7gRgBBwDAlVwURrBmVcDmWXykxXHvjz0B-MMS3J4F",
         },
-        .dvui = .{
-            .url = "git+https://github.com/david-vanderson/dvui?ref=main#9b372ab0e3beca5060eb1f9ffe3e83ee61665e37",
-            .hash = "dvui-0.5.0-dev-AQFJmRbtAwHyeIDl5laSSUlHNC1I_TXiwitJOowF6z-n",
+        .zig_webui = .{
+            .url = "https://github.com/webui-dev/zig-webui/archive/main.tar.gz",
+            .hash = "zig_webui-2.5.1-M4z7zSPMAQCDjnJKoN1KadGM9Uam7T3waJLId4K5dG3w",
         },
     },
     .paths = .{

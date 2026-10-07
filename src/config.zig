@@ -191,7 +191,7 @@ pub fn getTestConfig(allocator: std.mem.Allocator) !Config {
     }
 
     const dummy_args = std.process.Args{
-        .vector = &[_][*:0]const u8{"zpg_test"},
+        .vector = &[_][*:0]const u8{"kebab_test"},
     };
     var real_env = std.process.Environ.Map.init(allocator);
     defer real_env.deinit();
@@ -200,7 +200,7 @@ pub fn getTestConfig(allocator: std.mem.Allocator) !Config {
 
 test "config loads default values" {
     const dummy_args = std.process.Args{
-        .vector = &[_][*:0]const u8{"zpg"},
+        .vector = &[_][*:0]const u8{"kebab"},
     };
     var dummy_env = std.process.Environ.Map.init(testing.allocator);
     defer dummy_env.deinit();
@@ -244,7 +244,7 @@ test "config load env values and overrides defaults" {
 test "config load args values and overrides defaults" {
     const dummy_args = std.process.Args{
         .vector = &[_][*:0]const u8{
-            "zpg",
+            "kebab",
             "--mode",
             "tui",
             "--theme",
@@ -278,7 +278,7 @@ test "config load args values and overrides defaults" {
 test "config load short args values and overrides defaults" {
     const dummy_args = std.process.Args{
         .vector = &[_][*:0]const u8{
-            "zpg",
+            "kebab",
             "--mode",
             "tui",
             "--theme",
@@ -312,7 +312,7 @@ test "config load short args values and overrides defaults" {
 test "config returns missing argument error if arg value is missing " {
     const dummy_args = std.process.Args{
         .vector = &[_][*:0]const u8{
-            "zpg",
+            "kebab",
             "--mode",
             "--theme",
             "light",
@@ -347,7 +347,7 @@ test "config returns invalid argument error if arg value mismatch expected type"
 test "config load args and env values and args overrides all" {
     const dummy_args = std.process.Args{
         .vector = &[_][*:0]const u8{
-            "zpg",
+            "kebab",
             "--mode",
             "tui",
             "--theme",
@@ -389,7 +389,7 @@ test "config load args and env values and args overrides all" {
 test "config load args and env values and use defaults if nothing passed" {
     const dummy_args = std.process.Args{
         .vector = &[_][*:0]const u8{
-            "zpg",
+            "kebab",
             "--mode",
             "tui",
             "--port",
