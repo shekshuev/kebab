@@ -27,9 +27,9 @@ pub fn main(init: std.process.Init) !u8 {
 
     var path_buf: [std.fs.max_path_bytes]u8 = undefined;
     const app_dir = try switch (builtin.os.tag) {
-        .macos => std.fmt.bufPrint(&path_buf, "{s}/Library/Application Support/zpg", .{base_dir}),
-        .linux => std.fmt.bufPrint(&path_buf, "{s}/.local/share/zpg", .{base_dir}),
-        .windows => std.fmt.bufPrint(&path_buf, "{s}\\zpg", .{base_dir}),
+        .macos => std.fmt.bufPrint(&path_buf, "{s}/Library/Application Support/kebab", .{base_dir}),
+        .linux => std.fmt.bufPrint(&path_buf, "{s}/.local/share/kebab", .{base_dir}),
+        .windows => std.fmt.bufPrint(&path_buf, "{s}\\kebab", .{base_dir}),
         else => return AppError.UnsupportedOS,
     };
 
